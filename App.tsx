@@ -18,6 +18,7 @@ import { MOCK_PHARMACY_PATIENTS, MOCK_PATIENT_MEDICATIONS } from './constants';
 import { Page, Professional, UserProfile, UserRole, BoticareNotification, Patient, ProfessionalTitle, Appointment, DosageReminder } from './types';
 
 const App: React.FC = () => {
+  const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<any | null>(null);
   // Force userRole to always be professional for Boticare Pro
   const [userRole, setUserRole] = useState<UserRole>('professional');
@@ -59,12 +60,18 @@ const App: React.FC = () => {
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      if (session) fetchProfile(session.user.id);
+      if (session) {
+        fetchProfile(session.user.id).finally(() => setLoading(false));
+      } else {
+        setLoading(false);
+      }
     });
+    
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) fetchProfile(session.user.id);
     });
+    
     return () => subscription.unsubscribe();
   }, []);
 
@@ -140,8 +147,20 @@ const App: React.FC = () => {
       setActivePage(Page.PersonalChat);
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
+
   if (!session) {
-    return <div className="bg-white text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-200"><Auth /></div>;
+    return (
+      <div className="bg-white text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-200">
+        <Auth />
+      </div>
+    );
   }
 
   const handleDosageReminder = useCallback((reminder: DosageReminder) => {
