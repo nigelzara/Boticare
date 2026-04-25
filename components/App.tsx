@@ -22,6 +22,7 @@ import { MOCK_PHARMACY_PATIENTS, MOCK_PATIENT_MEDICATIONS } from './constants';
 import { Page, Professional, UserProfile, UserRole, BoticareNotification, Patient, ProfessionalTitle, DosageReminder } from './types';
 
 const App: React.FC = () => {
+  const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<any | null>(null);
   const [userRole, setUserRole] = useState<UserRole>('patient');
   const [activePage, setActivePage] = useState<Page>(Page.Dashboard);
@@ -59,37 +60,44 @@ const App: React.FC = () => {
         setUserRole(savedRole);
         setActivePage(savedRole === 'professional' ? Page.ProfessionalDashboard : Page.Dashboard);
     }
+    
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      if (session) fetchProfile(session.user.id);
+      if (session) {
+        fetchProfile(session.user.id).finally(() => setLoading(false));
+      } else {
+        setLoading(false);
+      }
     });
+    
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) fetchProfile(session.user.id);
     });
+    
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string): Promise<void> => {
     if (!supabase) return;
     try {
         const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
         if (error) throw error;
         if (data) {
+            const role = (data.role as UserRole) || 'patient';
             setUserProfile({
                 name: data.name || 'User',
                 email: data.email || '',
                 phone: data.phone || '',
                 avatar: data.avatar_url || 'https://i.pravatar.cc/150?u=default',
-                role: (data.role as UserRole) || 'patient', // Ensure role from DB is used
+                role, // Ensure role from DB is used
                 professionalTitle: (data.professional_title as ProfessionalTitle) || 'Doctor',
                 specialty: data.specialty || 'General Practice'
             });
             // Update the userRole state based on fetched profile
-            if (data.role !== userRole) {
-                setUserRole(data.role as UserRole);
-                setActivePage(data.role === 'professional' ? Page.ProfessionalDashboard : Page.Dashboard);
-            }
+            setUserRole(role);
+            localStorage.setItem('boticare-user-role', role);
+            setActivePage(role === 'professional' ? Page.ProfessionalDashboard : Page.Dashboard);
         }
     } catch (err) { console.error("Profile fetch error", err); }
   };
@@ -137,8 +145,20 @@ const App: React.FC = () => {
       setActivePage(Page.PersonalChat);
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
+
   if (!session) {
-    return <div className="bg-white text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-200"><Auth /></div>;
+    return (
+      <div className="bg-white text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-200">
+        <Auth />
+      </div>
+    );
   }
 
   // Separate rendering logic for Patient and Professional UIs
