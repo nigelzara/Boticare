@@ -4,10 +4,10 @@ import { Appointment, ChatMessage, AvailabilitySlot, PrescriptionRefillRequest }
 import { supabase } from "./supabaseClient";
 
 if (!process.env.API_KEY) {
-  throw new Error("API_KEY environment variable not set");
+  console.error("API_KEY environment variable not set. Gemini AI features will fail.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || 'MISSING_API_KEY' });
 
 interface GroundingOptions {
     useSearch?: boolean;
