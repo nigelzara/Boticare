@@ -27,7 +27,7 @@ const Auth: React.FC = () => {
 
     try {
       if (isSignUp) {
-        const { error } = await (supabase!.auth as any).signUp({
+        const { data, error } = await (supabase!.auth as any).signUp({
           email,
           password,
           options: {
@@ -39,7 +39,12 @@ const Auth: React.FC = () => {
           },
         });
         if (error) throw error;
-        setMessage('Check your email for the confirmation link!');
+        
+        if (data?.session) {
+          setMessage('Registration successful! Signing in...');
+        } else {
+          setMessage('Check your email for the confirmation link!');
+        }
       } else {
         const { error } = await (supabase!.auth as any).signInWithPassword({
           email,
