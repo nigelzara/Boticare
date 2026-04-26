@@ -6,6 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Boticare Health App</title>
     <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      // Handle ethereum redefinition errors gracefully
+      (function() {
+        const originalDefineProperty = Object.defineProperty;
+        Object.defineProperty = function(obj, prop, descriptor) {
+          if (obj === window && prop === 'ethereum') {
+            try {
+              return originalDefineProperty.call(this, obj, prop, descriptor);
+            } catch (e) {
+              if (e.message.includes('Cannot redefine property')) {
+                // Silently ignore ethereum redefinition attempts
+                return obj;
+              }
+              throw e;
+            }
+          }
+          return originalDefineProperty.call(this, obj, prop, descriptor);
+        };
+      })();
+    </script>
     <style>
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
