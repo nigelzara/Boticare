@@ -147,22 +147,6 @@ const App: React.FC = () => {
       setActivePage(Page.PersonalChat);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-      </div>
-    );
-  }
-
-  if (!session) {
-    return (
-      <div className="bg-white text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-200">
-        <Auth />
-      </div>
-    );
-  }
-
   const handleDosageReminder = useCallback((reminder: DosageReminder) => {
       setActiveReminders(prev => {
           if (prev.find(r => r.id === reminder.id)) return prev;
@@ -188,6 +172,24 @@ const App: React.FC = () => {
       setActiveReminders(prev => prev.filter(r => r.id !== reminder.id));
       setAcknowledgedReminderIds(prev => new Set(prev).add(reminder.id));
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="bg-white text-gray-800 font-sans dark:bg-gray-900 dark:text-gray-200">
+        <Auth />
+      </div>
+    );
+  }
+
+
 
   const renderAppContent = () => {
     switch (activePage) {
