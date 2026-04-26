@@ -3,11 +3,13 @@ import { GoogleGenAI, Modality, GenerateContentResponse, Part } from "@google/ge
 import { Appointment, ChatMessage, AvailabilitySlot, PrescriptionRefillRequest } from "../types";
 import { supabase } from "./supabaseClient";
 
-if (!process.env.API_KEY) {
-  console.error("API_KEY environment variable not set. Gemini AI features will fail.");
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey) {
+  console.error("VITE_GEMINI_API_KEY environment variable not set. Gemini AI features will fail.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || 'MISSING_API_KEY' });
+const ai = new GoogleGenAI({ apiKey: apiKey || 'MISSING_API_KEY' });
 
 interface GroundingOptions {
     useSearch?: boolean;
