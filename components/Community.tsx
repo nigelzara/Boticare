@@ -68,7 +68,7 @@ const createBlob = (data: Float32Array): Blob => {
 }
 
 const MAX_CHARS = 1000;
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 const outputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 let nextStartTime = 0;
 
