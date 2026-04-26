@@ -68,7 +68,10 @@ const createBlob = (data: Float32Array): Blob => {
 }
 
 const MAX_CHARS = 1000;
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+
+// Create AI instance only if API key is available
+const ai = import.meta.env.VITE_GEMINI_API_KEY ? new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY }) : null;
+
 const outputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 let nextStartTime = 0;
 
@@ -96,7 +99,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
   
   // Live API State
   const [isLiveSessionActive, setIsLiveSessionActive] = useState(false);
-  const sessionPromiseRef = useRef<ReturnType<typeof ai.live.connect> | null>(null);
+  const sessionPromiseRef = useRef<any>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
@@ -336,6 +339,15 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
   }, []);
 
   const startLiveSession = useCallback(async () => {
+    if (!ai) {
+      setMessages(prev => [...prev, { 
+        sender: 'ai', 
+        text: "Voice features are currently unavailable. Please check your API configuration.", 
+        timestamp: getCurrentTime() 
+      }]);
+      return;
+    }
+
     if (isLiveSessionActive) {
         stopLiveSession();
         return;

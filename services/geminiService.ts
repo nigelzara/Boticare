@@ -9,7 +9,11 @@ if (!apiKey) {
   console.error("VITE_GEMINI_API_KEY environment variable not set. Gemini AI features will fail.");
 }
 
-const ai = new GoogleGenAI({ apiKey: apiKey || 'MISSING_API_KEY' });
+// Create AI instance only if API key is available
+let ai: GoogleGenAI | null = null;
+if (apiKey) {
+  ai = new GoogleGenAI({ apiKey });
+}
 
 interface GroundingOptions {
     useSearch?: boolean;
@@ -23,6 +27,14 @@ const getCurrentTimestamp = () => {
 };
 
 export const getAIResponse = async (userMessage: string, imagePart: Part | null, grounding: GroundingOptions): Promise<ChatMessage> => {
+  if (!ai) {
+    return { 
+        sender: 'ai', 
+        text: "AI features are currently unavailable. Please check your API configuration.",
+        timestamp: getCurrentTimestamp(),
+    };
+  }
+
   try {
     const contents: { parts: Part[] } = { parts: [] };
     if (imagePart) {
@@ -77,6 +89,10 @@ export const getAIResponse = async (userMessage: string, imagePart: Part | null,
 };
 
 export const getWordSuggestions = async (inputText: string, chatHistory: ChatMessage[]): Promise<string[]> => {
+  if (!ai) {
+    return ["How are you feeling?", "Updates on tests?", "Next appointment?"];
+  }
+
   if (!inputText.trim() && chatHistory.length < 2) {
     return ["How are you feeling?", "Updates on tests?", "Next appointment?"];
   }
@@ -111,6 +127,10 @@ Return ONLY a comma-separated list of 3 suggestions.`;
 };
 
 export const getAppointmentSummary = async (appointment: Appointment): Promise<string> => {
+  if (!ai) {
+    return "AI features are currently unavailable.";
+  }
+
   try {
     const prompt = `Generate a professional medical summary of a patient's consultation (~300 words).
     
@@ -133,6 +153,10 @@ export const getAppointmentSummary = async (appointment: Appointment): Promise<s
 };
 
 export const editImage = async (base64ImageData: string, mimeType: string, prompt: string): Promise<string | null> => {
+    if (!ai) {
+        return null;
+    }
+
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash-image',
@@ -157,6 +181,10 @@ export const editImage = async (base64ImageData: string, mimeType: string, promp
 };
 
 export const generateSpeech = async (text: string): Promise<string | null> => {
+  if (!ai) {
+    return null;
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
@@ -178,6 +206,10 @@ export const generateSpeech = async (text: string): Promise<string | null> => {
 };
 
 export const analyzeVideo = async (videoFile: File, prompt: string): Promise<string> => {
+    if (!ai) {
+        return "AI features are currently unavailable.";
+    }
+
     try {
         const base64Video = await new Promise<string>((resolve) => {
             const reader = new FileReader();
@@ -208,6 +240,10 @@ export const analyzeVideo = async (videoFile: File, prompt: string): Promise<str
 };
 
 export const generateHealthReport = async (healthData: any, startDate: string, endDate: string): Promise<string> => {
+    if (!ai) {
+        return "AI features are currently unavailable.";
+    }
+
     try {
         const prompt = `As a healthcare professional AI, generate a comprehensive patient health report for the period ${startDate} to ${endDate}.
         
