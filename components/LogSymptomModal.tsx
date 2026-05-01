@@ -37,7 +37,7 @@ const LogSymptomModal: React.FC<LogSymptomModalProps> = ({ onClose, onSave }) =>
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g., Headache, Nausea"
-                    className="w-full bg-boticare-gray rounded-lg border-none px-4 py-2 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full bg-boticare-gray rounded-lg border-none px-4 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:bg-gray-700 dark:text-gray-200"
                 />
             </div>
 
@@ -47,7 +47,7 @@ const LogSymptomModal: React.FC<LogSymptomModalProps> = ({ onClose, onSave }) =>
                     type="date" 
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full bg-boticare-gray rounded-lg border-none px-4 py-2 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full bg-boticare-gray rounded-lg border-none px-4 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:bg-gray-700 dark:text-gray-200"
                 />
             </div>
 
@@ -56,7 +56,7 @@ const LogSymptomModal: React.FC<LogSymptomModalProps> = ({ onClose, onSave }) =>
                 <select 
                     value={severity}
                     onChange={(e) => setSeverity(e.target.value as any)}
-                    className="w-full bg-boticare-gray rounded-lg border-none px-4 py-2 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full bg-boticare-gray rounded-lg border-none px-4 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:bg-gray-700 dark:text-gray-200"
                 >
                     <option value="Mild">Mild</option>
                     <option value="Moderate">Moderate</option>
@@ -71,7 +71,7 @@ const LogSymptomModal: React.FC<LogSymptomModalProps> = ({ onClose, onSave }) =>
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe how you feel..."
                     rows={3}
-                    className="w-full bg-boticare-gray rounded-lg border-none p-4 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none resize-none dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full bg-boticare-gray rounded-lg border-none p-4 focus:ring-2 focus:ring-blue-600 focus:outline-none resize-none dark:bg-gray-700 dark:text-gray-200"
                 />
             </div>
         </div>
@@ -83,7 +83,7 @@ const LogSymptomModal: React.FC<LogSymptomModalProps> = ({ onClose, onSave }) =>
           <button
             onClick={handleSave}
             disabled={!name}
-            className="px-6 py-2 rounded-lg font-semibold text-white bg-boticare-primary hover:bg-opacity-90 disabled:bg-gray-400 dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-gray-600"
+            className="px-6 py-2 rounded-lg font-semibold text-white bg-blue-600 hover:bg-opacity-90 disabled:bg-gray-400 dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-gray-600"
           >
             Save Symptom
           </button>

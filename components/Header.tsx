@@ -5,7 +5,7 @@ import { APPOINTMENTS_DATA, MEDICATIONS_DATA, PROFESSIONALS_DATA, HEALTH_METRICS
 import { UserProfile, Page, BoticareNotification } from '../types';
 
 interface SearchSuggestion {
-    type: 'Appointment' | 'Patient' | 'Professional';
+    type: 'Appointment' | 'Medication' | 'Professional' | 'Metric';
     label: string;
     id: string | number;
     icon: React.ComponentType<{ className?: string }>;
@@ -37,13 +37,11 @@ const Header: React.FC<HeaderProps> = ({ userProfile, onNavigate, onToggleSideba
 
         const handler = setTimeout(() => {
             const lowerCaseQuery = query.toLowerCase();
-            // Search logic adapted for Professionals
-            const appointmentResults = APPOINTMENTS_DATA.filter(item => item.patientName.toLowerCase().includes(lowerCaseQuery)).map(item => ({ type: 'Appointment' as const, label: `${item.patientName} - ${item.type}`, id: item.id, icon: AppointmentsIcon }));
-            
-            // Assuming MOCK_PATIENTS are searched here, reusing PROFESSIONALS_DATA structure for mock simplicity in search logic or using names from appointments for now
-            const patientResults = APPOINTMENTS_DATA.filter(item => item.patientName.toLowerCase().includes(lowerCaseQuery)).map(item => ({ type: 'Patient' as const, label: item.patientName, id: item.patientId, icon: UserIcon }));
-
-            setSuggestions([...appointmentResults, ...patientResults]);
+            const appointmentResults = APPOINTMENTS_DATA.filter(item => item.doctorName.toLowerCase().includes(lowerCaseQuery) || item.specialty.toLowerCase().includes(lowerCaseQuery)).map(item => ({ type: 'Appointment' as const, label: `${item.doctorName} (${item.specialty})`, id: item.id, icon: AppointmentsIcon }));
+            const medicationResults = MEDICATIONS_DATA.filter(item => item.name.toLowerCase().includes(lowerCaseQuery)).map(item => ({ type: 'Medication' as const, label: `${item.name}`, id: item.id, icon: MedicationsIcon }));
+            const professionalResults = PROFESSIONALS_DATA.filter(item => item.name.toLowerCase().includes(lowerCaseQuery) || item.specialty.toLowerCase().includes(lowerCaseQuery)).map(item => ({ type: 'Professional' as const, label: `${item.name} (${item.specialty})`, id: item.id, icon: UserIcon }));
+            const metricResults = HEALTH_METRICS_DATA.filter(item => item.name.toLowerCase().includes(lowerCaseQuery)).map(item => ({ type: 'Metric' as const, label: `${item.name}`, id: item.id, icon: HeartIcon }));
+            setSuggestions([...appointmentResults, ...metricResults, ...medicationResults, ...professionalResults]);
         }, 300);
 
         return () => clearTimeout(handler);
@@ -59,11 +57,12 @@ const Header: React.FC<HeaderProps> = ({ userProfile, onNavigate, onToggleSideba
     }, []);
 
     const handleSuggestionClick = (suggestion: SearchSuggestion) => {
-        let targetPage = Page.ProfessionalDashboard;
+        let targetPage = Page.Dashboard;
         switch(suggestion.type) {
-            case 'Appointment': targetPage = Page.ProfessionalSchedule; break;
-            case 'Patient': targetPage = Page.PatientList; break;
-            case 'Professional': targetPage = Page.PatientList; break; // Fallback
+            case 'Appointment': targetPage = Page.Appointments; break;
+            case 'Medication': targetPage = Page.Medications; break;
+            case 'Metric': targetPage = Page.HealthMetrics; break;
+            case 'Professional': targetPage = Page.MyDoctors; break;
         }
         onNavigate(targetPage);
         setIsSuggestionsVisible(false);
@@ -81,14 +80,14 @@ const Header: React.FC<HeaderProps> = ({ userProfile, onNavigate, onToggleSideba
     <header className="bg-white border-b border-boticare-gray-medium p-3 md:p-4 flex items-center justify-between sticky top-0 z-20 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex items-center space-x-2 md:space-x-4">
         <button onClick={onToggleSidebar} className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg" aria-label="Toggle Menu"><MenuIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" /></button>
-        <h1 className="text-lg md:text-xl font-bold text-boticare-primary dark:text-white truncate">Boticare Pro</h1>
-        <span className="hidden sm:inline-block text-[10px] md:text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded-md dark:bg-blue-900/50 dark:text-blue-200 uppercase tracking-tighter">Practice Mode</span>
+        <h1 className="text-lg md:text-xl font-bold text-boticare-primary dark:text-white truncate">Boticare</h1>
+        <span className="hidden sm:inline-block text-[10px] md:text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded-md dark:bg-gray-700 dark:text-gray-300 uppercase tracking-tighter">HIPAA</span>
       </div>
 
       <div className="flex-1 max-w-sm md:max-w-md mx-2 md:mx-4">
         <div className="relative" ref={searchContainerRef}>
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><SearchIcon className="h-4 md:h-5 w-4 md:w-5 text-gray-400" /></div>
-          <input type="text" placeholder="Search patients, appointments..." value={query} onChange={e => setQuery(e.target.value)} onFocus={() => setIsSuggestionsVisible(true)} className="w-full bg-boticare-gray rounded-lg border-none pl-9 md:pl-10 pr-3 md:pr-4 py-1.5 md:py-2 text-sm focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400" />
+          <input type="text" placeholder="Search..." value={query} onChange={e => setQuery(e.target.value)} onFocus={() => setIsSuggestionsVisible(true)} className="w-full bg-boticare-gray rounded-lg border-none pl-9 md:pl-10 pr-3 md:pr-4 py-1.5 md:py-2 text-sm focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400" />
           {isSuggestionsVisible && suggestions.length > 0 && <SearchResults suggestions={suggestions} onSelect={handleSuggestionClick} />}
         </div>
       </div>
@@ -101,12 +100,11 @@ const Header: React.FC<HeaderProps> = ({ userProfile, onNavigate, onToggleSideba
             </button>
             {isNotificationsOpen && <NotificationsPanel notifications={notifications} />}
         </div>
-        
         <div className="flex items-center space-x-2 md:space-x-3">
             <img src={userProfile.avatar} alt={userProfile.name} className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border-2 border-white shadow-sm dark:border-gray-600" />
             <div className="hidden sm:block">
                 <p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{userProfile.name}</p>
-                <p className="text-[10px] md:text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide">{userProfile.professionalTitle || 'Healthcare Pro'}</p>
+                <p className="text-[10px] md:text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Patient</p>
             </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { editImage } from '../services/geminiService';
 import { UploadIcon, PenIcon } from './Icons';
@@ -64,7 +65,7 @@ const ImageEditor: React.FC = () => {
                         >
                             <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
                             <UploadIcon className="w-10 h-10 mx-auto text-boticare-gray-dark dark:text-gray-500 mb-2"/>
-                            <p className="font-semibold text-boticare-primary dark:text-blue-400">Click to upload image</p>
+                            <p className="font-semibold text-blue-600 dark:text-blue-400">Click to upload image</p>
                             <p className="text-xs text-boticare-gray-dark dark:text-gray-400">PNG, JPG, or WEBP</p>
                         </div>
                         
@@ -78,7 +79,7 @@ const ImageEditor: React.FC = () => {
                                     value={prompt}
                                     onChange={(e) => setPrompt(e.target.value)}
                                     placeholder='e.g., "Add a retro filter" or "Make the sky blue"'
-                                    className="w-full bg-boticare-gray rounded-lg border-none pl-10 pr-4 py-2 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none dark:bg-gray-700 dark:text-gray-200"
+                                    className="w-full bg-boticare-gray rounded-lg border-none pl-10 pr-4 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:bg-gray-700 dark:text-gray-200"
                                 />
                             </div>
                         </div>
@@ -86,7 +87,7 @@ const ImageEditor: React.FC = () => {
                          <button 
                             onClick={handleGenerate} 
                             disabled={isLoading || !originalImage || !prompt.trim()}
-                            className="w-full bg-boticare-primary text-white font-semibold py-2.5 rounded-lg flex items-center justify-center space-x-2 hover:bg-opacity-90 transition-colors disabled:bg-gray-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-gray-500"
+                            className="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-lg flex items-center justify-center space-x-2 hover:bg-opacity-90 transition-colors disabled:bg-gray-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-gray-500"
                         >
                             {isLoading ? 'Generating...' : 'Generate Edit'}
                         </button>
@@ -103,7 +104,7 @@ const ImageEditor: React.FC = () => {
                         <div className="text-center">
                             <h3 className="font-semibold mb-2">Edited</h3>
                             <div className="aspect-square bg-boticare-gray dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                {isLoading && <div className="w-5 h-5 border-2 border-t-transparent border-boticare-primary dark:border-blue-400 rounded-full animate-spin"></div>}
+                                {isLoading && <div className="w-5 h-5 border-2 border-t-transparent border-blue-600 dark:border-blue-400 rounded-full animate-spin"></div>}
                                 {error && <p className="text-sm text-red-500 px-2">{error}</p>}
                                 {editedImage && <img src={editedImage} alt="Edited" className="max-h-full max-w-full rounded-lg object-contain" />}
                                 {!isLoading && !error && !editedImage && <p className="text-sm text-boticare-gray-dark">Awaiting edit</p>}

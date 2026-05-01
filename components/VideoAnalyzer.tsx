@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { analyzeVideo } from '../services/geminiService';
 import { UploadIcon, ChatIcon } from './Icons';
@@ -60,7 +61,7 @@ const VideoAnalyzer: React.FC = () => {
                         >
                             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="video/*" />
                             <UploadIcon className="w-10 h-10 mx-auto text-boticare-gray-dark dark:text-gray-500 mb-2"/>
-                            <p className="font-semibold text-boticare-primary dark:text-blue-400">Click to upload video</p>
+                            <p className="font-semibold text-blue-600 dark:text-blue-400">Click to upload video</p>
                             <p className="text-xs text-boticare-gray-dark dark:text-gray-400">{videoFile ? videoFile.name : 'MP4, MOV, etc.'}</p>
                         </div>
 
@@ -76,13 +77,13 @@ const VideoAnalyzer: React.FC = () => {
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
                                 placeholder="e.g., 'Summarize this video' or 'What is happening at 0:15?'"
-                                className="w-full bg-boticare-gray rounded-lg border-none p-4 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none resize-none dark:bg-gray-700 dark:text-gray-200"
+                                className="w-full bg-boticare-gray rounded-lg border-none p-4 focus:ring-2 focus:ring-blue-600 focus:outline-none resize-none dark:bg-gray-700 dark:text-gray-200"
                             />
                         </div>
                          <button 
                             onClick={handleAnalyze} 
                             disabled={isLoading || !videoFile || !prompt.trim()}
-                            className="w-full bg-boticare-primary text-white font-semibold py-2.5 rounded-lg flex items-center justify-center space-x-2 hover:bg-opacity-90 transition-colors disabled:bg-gray-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-gray-500"
+                            className="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-lg flex items-center justify-center space-x-2 hover:bg-opacity-90 transition-colors disabled:bg-gray-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-gray-500"
                         >
                             {isLoading ? 'Analyzing...' : 'Analyze Video'}
                         </button>

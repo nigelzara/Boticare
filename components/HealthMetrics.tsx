@@ -29,88 +29,130 @@ const HealthMetrics: React.FC<HealthMetricsProps> = ({ setActivePage }) => {
     if (alert.title === 'Missed Medication') {
         setReminderModalAlert(alert);
     } else {
+        // For 'Elevated Blood Glucose' and 'Upcoming Appointment'
         setActivePage(Page.ScheduleAppointment);
     }
   };
 
   const handleAddSymptom = (newSymptom: Omit<Symptom, 'id'>) => {
-      const symptom: Symptom = { ...newSymptom, id: Date.now().toString() };
+      const symptom: Symptom = {
+          ...newSymptom,
+          id: Date.now().toString()
+      };
       setSymptoms([symptom, ...symptoms]);
       setToastMessage('Symptom logged successfully');
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {toastMessage && <Toast message={toastMessage} type="success" onClose={() => setToastMessage(null)} />}
-      <MedicationReminderModal alert={reminderModalAlert} onClose={() => setReminderModalAlert(null)} onConfirm={() => {
+      <MedicationReminderModal
+          alert={reminderModalAlert}
+          onClose={() => setReminderModalAlert(null)}
+          onConfirm={(newDate, newTime) => {
               setReminderModalAlert(null);
-              setToastMessage(`Reminder updated!`);
+              setToastMessage(`Reminder set for ${newDate} at ${newTime}!`);
+              setTimeout(() => setToastMessage(null), 3000);
           }}
       />
-      {isLogSymptomOpen && <LogSymptomModal onClose={() => setIsLogSymptomOpen(false)} onSave={handleAddSymptom} />}
+      {isLogSymptomOpen && (
+          <LogSymptomModal 
+            onClose={() => setIsLogSymptomOpen(false)}
+            onSave={handleAddSymptom}
+          />
+      )}
       
-      <div className="flex flex-row justify-between items-center px-1">
+      <div className="flex flex-row justify-between items-center md:items-end">
         <div>
-            <h2 className="text-2xl font-black">Health Metrics</h2>
-            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">Deep dive into vital signs and clinical logs.</p>
+            <h2 className="text-xl md:text-2xl font-bold">Health Metrics</h2>
+            <p className="text-xs md:text-base text-boticare-gray-dark dark:text-gray-400">Track and analyze your vital signs.</p>
         </div>
         <button 
             onClick={() => setIsLogSymptomOpen(true)}
-            className="bg-boticare-primary text-white font-black uppercase tracking-widest text-[9px] md:text-xs px-2.5 py-2 md:px-4 rounded-xl flex items-center gap-1 hover:bg-opacity-90 transition-all dark:bg-blue-600 shadow-md active:scale-95 whitespace-nowrap"
+            className="bg-blue-600 text-white font-semibold px-3 py-2 md:px-4 md:py-2 rounded-lg flex items-center space-x-1 md:space-x-2 hover:bg-blue-700 transition-colors whitespace-nowrap dark:bg-blue-600 dark:hover:bg-blue-700"
         >
-            <PlusIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
-            <span>Log Symptom</span>
+            <PlusIcon className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="text-sm md:text-base">Log Symptom</span>
         </button>
       </div>
 
-      <div className="bg-white p-4 md:p-6 rounded-3xl border border-gray-100 dark:bg-gray-800 dark:border-gray-700 animate-fade-in shadow-sm">
-        <div className="flex justify-between items-center mb-6">
-            <h3 className="text-[10px] md:text-sm font-black uppercase tracking-widest text-gray-400">Analytics Overview</h3>
-            <div className="flex bg-gray-50 dark:bg-gray-900 p-1 rounded-xl">
-                <button className="px-2.5 py-1 text-[9px] md:text-[10px] font-black uppercase rounded-lg bg-white dark:bg-gray-700 shadow-sm dark:text-white">7D</button>
-                <button className="px-2.5 py-1 text-[9px] md:text-[10px] font-black uppercase rounded-lg text-gray-400">30D</button>
+      {/* Charts Section */}
+      <div className="bg-white p-6 rounded-xl border border-boticare-gray-medium dark:bg-gray-800 dark:border-gray-700 animate-fade-in">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <h3 className="text-lg font-bold">Analytics Overview</h3>
+            <div className="flex space-x-2 mt-2 md:mt-0">
+                <button className="px-3 py-1 text-sm rounded-full bg-blue-600 text-white dark:bg-blue-600">7 Days</button>
+                <button className="px-3 py-1 text-sm rounded-full bg-boticare-gray text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300">30 Days</button>
             </div>
         </div>
-        {selectedMetric && <MetricChart data={selectedMetric.history} color="#3B82F6" label={selectedMetric.name} />}
+        {selectedMetric && (
+            <MetricChart 
+                data={selectedMetric.history} 
+                color="#3B82F6" 
+                label={selectedMetric.name} 
+            />
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold">Key Metrics</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {HEALTH_METRICS_DATA.map(metric => (
-            <div key={metric.id} onClick={() => setSelectedMetricId(metric.id)} className={`cursor-pointer transition-all duration-200 rounded-3xl ${selectedMetricId === metric.id ? 'ring-2 ring-blue-500 shadow-lg scale-[1.01]' : 'hover:scale-[1.005]'}`}>
+            <div 
+                key={metric.id} 
+                onClick={() => setSelectedMetricId(metric.id)}
+                className={`cursor-pointer transition-all duration-200 rounded-xl ${selectedMetricId === metric.id ? 'ring-2 ring-blue-600 shadow-lg scale-[1.02]' : 'hover:shadow-md'}`}
+            >
                 <HealthMetricCard metric={metric} />
             </div>
           ))}
+        </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
-        <div className="space-y-4">
-            <h3 className="text-lg font-black px-1">Health Alerts</h3>
-            {HEALTH_ALERTS_DATA.map(alert => <AlertCard key={alert.id} alert={alert} onTakeAction={handleTakeAction} />)}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+            <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold">Health Alerts</h3>
+            </div>
+            <div className="space-y-4">
+            {HEALTH_ALERTS_DATA.map(alert => (
+                <AlertCard key={alert.id} alert={alert} onTakeAction={handleTakeAction} />
+            ))}
+            </div>
         </div>
 
-        <div className="space-y-4">
-            <h3 className="text-lg font-black px-1">Recent Symptoms</h3>
-            <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700 shadow-sm">
+        <div>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold">Recent Symptoms</h3>
+            </div>
+            <div className="bg-white rounded-xl border border-boticare-gray-medium overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                 {symptoms.length > 0 ? (
-                    <ul className="divide-y divide-gray-50 dark:divide-gray-700">
+                    <ul className="divide-y divide-boticare-gray-medium dark:divide-gray-700">
                         {symptoms.map(symptom => (
-                            <li key={symptom.id} className="p-4 md:p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <div className="flex justify-between items-start mb-2">
-                                    <h4 className="font-bold text-xs md:text-sm">{symptom.name}</h4>
-                                    <span className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase">{symptom.date}</span>
+                            <li key={symptom.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <div className="flex justify-between items-start mb-1">
+                                    <h4 className="font-bold text-gray-800 dark:text-gray-100">{symptom.name}</h4>
+                                    <span className="text-xs text-boticare-gray-dark dark:text-gray-400">{symptom.date}</span>
                                 </div>
-                                <span className={`text-[8px] md:text-[9px] font-black px-2 py-0.5 rounded-lg uppercase inline-block mb-2 ${
-                                         symptom.severity === 'Severe' ? 'bg-red-50 text-red-600' :
-                                         symptom.severity === 'Moderate' ? 'bg-yellow-50 text-yellow-600' : 'bg-green-50 text-green-600'
+                                <div className="flex items-center gap-2 mb-2">
+                                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                                         symptom.severity === 'Severe' ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300' :
+                                         symptom.severity === 'Moderate' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300' :
+                                         'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
                                      }`}>
                                          {symptom.severity}
                                      </span>
-                                <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">{symptom.description}</p>
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">{symptom.description}</p>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <div className="p-10 text-center text-gray-400 text-[10px] font-black uppercase tracking-widest">No logs available</div>
+                    <div className="p-8 text-center text-boticare-gray-dark dark:text-gray-400">
+                        No symptoms logged recently.
+                    </div>
                 )}
             </div>
         </div>

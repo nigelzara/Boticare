@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Appointment } from '../types';
 import { CalendarIcon, ClockIcon, XIcon } from './Icons';
@@ -28,14 +29,14 @@ const RescheduleModal: React.FC<RescheduleModalProps> = ({ appointment, onClose,
                 </button>
 
                 <h2 id="reschedule-title" className="text-2xl font-bold mb-2">Reschedule Appointment</h2>
-                <p className="text-boticare-gray-dark mb-6">Select a new date and time for your appointment with <span className="font-semibold text-boticare-primary">{appointment.doctorName}</span>.</p>
+                <p className="text-boticare-gray-dark mb-6">Select a new date and time for your appointment with <span className="font-semibold text-blue-600">{appointment.doctorName}</span>.</p>
 
                 <div className="space-y-6">
                     <div>
                         <p className="text-sm font-semibold text-gray-700 mb-2">Select a New Date</p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {availableDates.map(date => (
-                                <button key={date} onClick={() => setSelectedDate(date)} className={`p-3 rounded-lg border-2 text-center transition-colors ${selectedDate === date ? 'border-boticare-primary bg-blue-50' : 'border-boticare-gray-medium hover:border-boticare-gray-dark'}`}>
+                                <button key={date} onClick={() => setSelectedDate(date)} className={`p-3 rounded-lg border-2 text-center transition-colors ${selectedDate === date ? 'border-blue-600 bg-blue-50' : 'border-boticare-gray-medium hover:border-boticare-gray-dark'}`}>
                                     <CalendarIcon className="w-5 h-5 mx-auto mb-1.5 text-boticare-gray-dark" />
                                     <p className="font-semibold text-sm">{date}</p>
                                 </button>
@@ -46,7 +47,7 @@ const RescheduleModal: React.FC<RescheduleModalProps> = ({ appointment, onClose,
                         <p className="text-sm font-semibold text-gray-700 mb-2">Select a New Time</p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {availableTimes.map(time => (
-                                <button key={time} onClick={() => setSelectedTime(time)} className={`p-3 rounded-lg border-2 text-center transition-colors ${selectedTime === time ? 'border-boticare-primary bg-blue-50' : 'border-boticare-gray-medium hover:border-boticare-gray-dark'}`}>
+                                <button key={time} onClick={() => setSelectedTime(time)} className={`p-3 rounded-lg border-2 text-center transition-colors ${selectedTime === time ? 'border-blue-600 bg-blue-50' : 'border-boticare-gray-medium hover:border-boticare-gray-dark'}`}>
                                     <ClockIcon className="w-5 h-5 mx-auto mb-1.5 text-boticare-gray-dark" />
                                     <p className="font-semibold text-sm">{time}</p>
                                 </button>
@@ -61,7 +62,7 @@ const RescheduleModal: React.FC<RescheduleModalProps> = ({ appointment, onClose,
                     </button>
                     <button
                         onClick={handleConfirm}
-                        className="bg-boticare-primary text-white font-semibold px-6 py-2 rounded-lg flex items-center space-x-2 hover:bg-opacity-90 transition-colors"
+                        className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg flex items-center space-x-2 hover:bg-opacity-90 transition-colors"
                     >
                         <span>Confirm Reschedule</span>
                     </button>

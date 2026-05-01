@@ -57,7 +57,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder={placeholder}
-            className="w-full bg-boticare-gray rounded-lg border-none p-4 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none resize-none mb-6 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
+            className="w-full bg-boticare-gray rounded-lg border-none p-4 focus:ring-2 focus:ring-blue-600 focus:outline-none resize-none mb-6 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
             rows={4}
         />
 
@@ -65,7 +65,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
              <button
                 onClick={handleSubmit}
                 disabled={rating === 0}
-                className="w-full bg-boticare-primary text-white font-semibold py-3 rounded-lg hover:bg-opacity-90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-gray-600"
+                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-opacity-90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-gray-600"
             >
                 Submit Feedback
             </button>

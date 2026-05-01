@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Page, Patient } from '../types';
 import { SearchIcon, FilterIcon, UserIcon, ChatIcon, FileIcon, XIcon, CalendarIcon, PlusIcon } from './Icons';
@@ -53,7 +54,7 @@ const PatientList: React.FC<PatientListProps> = ({ setActivePage, onStartChat })
                 </div>
                 <button 
                     onClick={() => setIsAddModalOpen(true)}
-                    className="bg-boticare-primary text-white font-bold px-5 py-3 rounded-xl flex items-center space-x-2 hover:bg-opacity-90 transition-all dark:bg-blue-600 dark:hover:bg-blue-700 shadow-lg shadow-blue-100 dark:shadow-none"
+                    className="bg-blue-600 text-white font-bold px-5 py-3 rounded-xl flex items-center space-x-2 hover:bg-opacity-90 transition-all dark:bg-blue-600 dark:hover:bg-blue-700 shadow-lg shadow-blue-100 dark:shadow-none"
                 >
                     <PlusIcon className="w-5 h-5" />
                     <span>Add Patient</span>
@@ -70,7 +71,7 @@ const PatientList: React.FC<PatientListProps> = ({ setActivePage, onStartChat })
                         placeholder="Search by name or condition..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-boticare-gray dark:bg-gray-700 rounded-xl border-none focus:ring-2 focus:ring-boticare-blue-dark dark:text-white shadow-inner"
+                        className="w-full pl-10 pr-4 py-2.5 bg-boticare-gray dark:bg-gray-700 rounded-xl border-none focus:ring-2 focus:ring-blue-600 dark:text-white shadow-inner"
                     />
                 </div>
                 <div className="flex items-center space-x-2">
@@ -78,7 +79,7 @@ const PatientList: React.FC<PatientListProps> = ({ setActivePage, onStartChat })
                     <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="bg-boticare-gray dark:bg-gray-700 border-none rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-boticare-blue-dark dark:text-white"
+                        className="bg-boticare-gray dark:bg-gray-700 border-none rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-blue-600 dark:text-white"
                     >
                         <option value="All">All Statuses</option>
                         <option value="Stable">Stable</option>

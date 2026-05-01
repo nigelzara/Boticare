@@ -2,26 +2,22 @@
 import React, { useState } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { Page, UserProfile, UserRole, BoticareNotification } from '../types';
-import { SparklesIcon } from './Icons';
+import { Page, UserProfile, BoticareNotification } from '../types';
 
 interface LayoutProps {
   children: React.ReactNode;
   activePage: Page;
   setActivePage: (page: Page) => void;
   userProfile: UserProfile;
-  userRole: UserRole;
   notifications: BoticareNotification[];
   onMarkNotificationsAsRead: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activePage, setActivePage, userProfile, userRole, notifications, onMarkNotificationsAsRead }) => {
+const Layout: React.FC<LayoutProps> = ({ children, activePage, setActivePage, userProfile, notifications, onMarkNotificationsAsRead }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => setIsSidebarOpen(false);
-
-  const showAiFab = activePage !== Page.ChatBot;
 
   return (
     <div className="flex h-screen bg-boticare-gray dark:bg-gray-900 overflow-hidden relative">
@@ -45,11 +41,10 @@ const Layout: React.FC<LayoutProps> = ({ children, activePage, setActivePage, us
             closeSidebar();
           }} 
           onClose={closeSidebar}
-          userRole={userRole}
         />
       </div>
 
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0 relative">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <Header 
           userProfile={userProfile} 
           onNavigate={(page) => {
@@ -63,17 +58,6 @@ const Layout: React.FC<LayoutProps> = ({ children, activePage, setActivePage, us
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-8">
           {children}
         </main>
-
-        {/* Mobile AI Assistant FAB */}
-        {showAiFab && (
-            <button
-                onClick={() => setActivePage(Page.ChatBot)}
-                className="lg:hidden fixed bottom-6 right-6 bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-2xl z-50 hover:scale-105 active:scale-95 transition-all flex items-center justify-center animate-fade-in border-2 border-white/20"
-                aria-label="Open AI Assistant"
-            >
-                <SparklesIcon className="w-6 h-6" />
-            </button>
-        )}
       </div>
     </div>
   );

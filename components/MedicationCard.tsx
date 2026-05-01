@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { Medication } from '../types';
 import { PillIcon, ClockIcon, PenIcon, CheckCircleIcon, XIcon } from './Icons';
@@ -126,7 +125,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication: initialMedi
         </div>
         <div className="w-full bg-boticare-gray rounded-full h-2 dark:bg-gray-700">
           <div
-            className={`h-2 rounded-full ${medication.percentageLeft < 30 ? 'bg-red-500' : 'bg-boticare-primary dark:bg-blue-500'}`}
+            className={`h-2 rounded-full ${medication.percentageLeft < 30 ? 'bg-red-500' : 'bg-blue-500 dark:bg-blue-500'}`}
             style={{ width: `${medication.percentageLeft}%` }}
           ></div>
         </div>
@@ -153,7 +152,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication: initialMedi
             {medication.isTaken ? (
               <span className="text-xs font-semibold text-boticare-green-dark bg-boticare-green px-3 py-1 rounded-md dark:bg-green-900/50 dark:text-green-300">Taken</span>
             ) : (
-              <button onClick={handleTakeNow} className="bg-boticare-primary text-white text-xs font-semibold px-2 py-1.5 rounded-lg dark:bg-blue-600 dark:hover:bg-blue-700 whitespace-nowrap">
+              <button onClick={handleTakeNow} className="bg-blue-600 text-white text-xs font-semibold px-2 py-1.5 rounded-lg dark:bg-blue-600 dark:hover:bg-blue-700 whitespace-nowrap">
                 Take now
               </button>
             )}
@@ -173,7 +172,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication: initialMedi
                                     type="text" 
                                     value={editedDose.dosage}
                                     onChange={(e) => setEditedDose({...editedDose, dosage: e.target.value})}
-                                    className="w-20 bg-white dark:bg-gray-700 border border-boticare-gray-medium dark:border-gray-600 rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none"
+                                    className="w-20 bg-white dark:bg-gray-700 border border-boticare-gray-medium dark:border-gray-600 rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-blue-600 focus:outline-none"
                                 />
                                 <span className="text-gray-500">-</span>
                                 <span className="font-medium whitespace-nowrap">{dose.time.includes(',') ? dose.time.split(', ')[0] + ',' : ''}</span>
@@ -181,7 +180,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication: initialMedi
                                     type="time"
                                     value={editedDose.time}
                                     onChange={(e) => setEditedDose({...editedDose, time: e.target.value})}
-                                    className="bg-white dark:bg-gray-700 border border-boticare-gray-medium dark:border-gray-600 rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none"
+                                    className="bg-white dark:bg-gray-700 border border-boticare-gray-medium dark:border-gray-600 rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-blue-600 focus:outline-none"
                                 />
                                 <button onClick={handleSaveEdit} className="p-1 text-green-500 hover:text-green-700 dark:hover:text-green-400"><CheckCircleIcon className="w-5 h-5" /></button>
                                 <button onClick={handleCancelEdit} className="p-1 text-red-500 hover:text-red-700 dark:hover:text-red-400"><XIcon className="w-5 h-5" /></button>
@@ -192,7 +191,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication: initialMedi
                                     <ClockIcon className="w-4 h-4 flex-shrink-0" />
                                     <span><strong>{dose.dosage}</strong> - {dose.time}</span>
                                 </div>
-                                <button onClick={() => handleStartEdit(index)} className="opacity-0 group-hover:opacity-100 text-boticare-gray-dark hover:text-boticare-primary p-1 dark:text-gray-500 dark:hover:text-gray-300" aria-label="Edit dose">
+                                <button onClick={() => handleStartEdit(index)} className="opacity-0 group-hover:opacity-100 text-boticare-gray-dark hover:text-blue-600 p-1 dark:text-gray-500 dark:hover:text-gray-300" aria-label="Edit dose">
                                     <PenIcon className="w-4 h-4" />
                                 </button>
                             </>
@@ -205,7 +204,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication: initialMedi
       
       <button 
         onClick={() => setShowAllDoses(!showAllDoses)}
-        className="text-center text-sm font-semibold text-boticare-primary hover:underline dark:text-blue-400"
+        className="text-center text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400"
       >
         {showAllDoses ? 'Hide doses' : 'Show all doses'}
       </button>

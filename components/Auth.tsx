@@ -1,14 +1,11 @@
 
 import React, { useState } from 'react';
 import { supabase } from '../services/supabaseClient';
-import { LockClosedIcon, UserIcon, ArrowRightIcon, EyeIcon, EyeOffIcon, BriefcaseIcon } from './Icons';
-import { UserRole } from '../types';
+import { LockClosedIcon, UserIcon, ArrowRightIcon, EyeIcon, EyeOffIcon } from './Icons';
 
 const Auth: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
-  // Hardcoded to professional for Boticare Pro
-  const [role, setRole] = useState<UserRole>('professional');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,29 +19,24 @@ const Auth: React.FC = () => {
     setError(null);
     setMessage(null);
 
-    // Persist role selection
-    localStorage.setItem('boticare-user-role', role);
+    // Persist role selection (default to patient)
+    localStorage.setItem('boticare-user-role', 'patient');
 
     try {
       if (isSignUp) {
-        const { data, error } = await (supabase!.auth as any).signUp({
+        const { error } = await (supabase!.auth as any).signUp({
           email,
           password,
           options: {
             data: {
               full_name: fullName,
-              role: role,
+              role: 'patient',
             },
             emailRedirectTo: window.location.origin,
           },
         });
         if (error) throw error;
-        
-        if (data?.session) {
-          setMessage('Registration successful! Signing in...');
-        } else {
-          setMessage('Check your email for the confirmation link!');
-        }
+        setMessage('Check your email for the confirmation link!');
       } else {
         const { error } = await (supabase!.auth as any).signInWithPassword({
           email,
@@ -63,18 +55,20 @@ const Auth: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
       <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
         <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200 dark:shadow-none">
-                <BriefcaseIcon className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/30 dark:to-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-600 dark:from-blue-400 dark:to-teal-400">B</span>
             </div>
           <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
-            Boticare Pro
+            {isSignUp ? 'Create Patient Account' : 'Welcome Back'}
           </h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
-            {isSignUp ? 'Register your Practice' : 'Healthcare Professional Login'}
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            {isSignUp 
+                ? 'Start your health journey today' 
+                : 'Sign in to access your health dashboard'}
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleAuth}>
+        <form className="mt-6 space-y-6" onSubmit={handleAuth}>
           <div className="rounded-md shadow-sm space-y-4">
             {isSignUp && (
               <div>
@@ -166,7 +160,7 @@ const Auth: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg transform transition-all active:scale-[0.98]"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg transform transition-all active:scale-[0.98]"
             >
               {isLoading ? (
                   <span className="flex items-center">
@@ -188,14 +182,14 @@ const Auth: React.FC = () => {
           <div className="text-center">
             <button
               type="button"
-              className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+              className="text-sm font-medium text-blue-600 hover:text-teal-600 dark:text-blue-400 dark:hover:text-teal-400 transition-colors"
               onClick={() => {
                   setIsSignUp(!isSignUp);
                   setError(null);
                   setMessage(null);
               }}
             >
-              {isSignUp ? 'Already have an account? Sign in' : "New Practice? Register here"}
+              {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
             </button>
           </div>
         </form>

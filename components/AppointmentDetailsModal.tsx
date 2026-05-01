@@ -81,7 +81,7 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({ appoi
                                     <p className="text-xs text-gray-500">{doc.date}</p>
                                 </div>
                             </div>
-                            <button className="text-boticare-blue-dark text-sm font-medium hover:underline dark:text-blue-400">View</button>
+                            <button className="text-blue-600 text-sm font-medium hover:underline dark:text-blue-400">View</button>
                         </li>
                     ))}
                 </ul>
@@ -93,7 +93,7 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({ appoi
         <div className="flex justify-end pt-6 mt-6 border-t border-boticare-gray-medium dark:border-gray-700">
              <button
                 onClick={onClose}
-                className="bg-boticare-primary text-white font-semibold px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
+                className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
             >
                 Close
             </button>

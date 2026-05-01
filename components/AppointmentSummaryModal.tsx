@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Appointment } from '../types';
 import { XIcon, CalendarIcon, ClockIcon } from './Icons';
@@ -41,9 +42,9 @@ const AppointmentSummaryModal: React.FC<AppointmentSummaryModalProps> = ({ appoi
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center space-y-4 py-10">
                     <div className="flex items-center justify-center space-x-2">
-                        <div className="w-3 h-3 bg-boticare-primary rounded-full animate-pulse [animation-delay:-0.3s] dark:bg-blue-400"></div>
-                        <div className="w-3 h-3 bg-boticare-primary rounded-full animate-pulse [animation-delay:-0.15s] dark:bg-blue-400"></div>
-                        <div className="w-3 h-3 bg-boticare-primary rounded-full animate-pulse dark:bg-blue-400"></div>
+                        <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse [animation-delay:-0.3s] dark:bg-blue-400"></div>
+                        <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse [animation-delay:-0.15s] dark:bg-blue-400"></div>
+                        <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse dark:bg-blue-400"></div>
                     </div>
                     <p className="text-sm font-medium text-boticare-gray-dark dark:text-gray-400">Generating AI summary, please wait...</p>
                 </div>
@@ -57,7 +58,7 @@ const AppointmentSummaryModal: React.FC<AppointmentSummaryModalProps> = ({ appoi
          <div className="flex justify-end pt-6 mt-6 border-t border-boticare-gray-medium dark:border-gray-700">
             <button
                 onClick={onClose}
-                className="bg-boticare-primary text-white font-semibold px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
+                className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
             >
                 Close
             </button>

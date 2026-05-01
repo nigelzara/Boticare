@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { HealthAlert } from '../types';
 import { ClockIcon, XIcon, PillIcon } from './Icons';
@@ -63,7 +64,7 @@ const MedicationReminderModal: React.FC<MedicationReminderModalProps> = ({ alert
                     </div>
                     <div>
                         <h2 id="reminder-title" className="text-2xl font-bold">Set New Reminder</h2>
-                        <p className="text-boticare-gray-dark dark:text-gray-400">You missed a dose of <span className="font-semibold text-boticare-primary dark:text-gray-200">{medicationName}</span>. Set a new reminder.</p>
+                        <p className="text-boticare-gray-dark dark:text-gray-400">You missed a dose of <span className="font-semibold text-blue-600 dark:text-gray-200">{medicationName}</span>. Set a new reminder.</p>
                     </div>
                 </div>
 
@@ -72,7 +73,7 @@ const MedicationReminderModal: React.FC<MedicationReminderModalProps> = ({ alert
                         <p className="text-sm font-semibold text-gray-700 mb-2 dark:text-gray-300">Select a Date</p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {availableDates.map(date => (
-                                <button key={date} onClick={() => setSelectedDate(date)} className={`p-3 rounded-lg border-2 text-center transition-colors ${selectedDate === date ? 'border-boticare-primary bg-boticare-blue/50 dark:border-blue-500 dark:bg-blue-900/30' : 'border-boticare-gray-medium hover:border-boticare-gray-dark dark:border-gray-600 dark:hover:border-gray-500'}`}>
+                                <button key={date} onClick={() => setSelectedDate(date)} className={`p-3 rounded-lg border-2 text-center transition-colors ${selectedDate === date ? 'border-blue-600 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/30' : 'border-boticare-gray-medium hover:border-boticare-gray-dark dark:border-gray-600 dark:hover:border-gray-500'}`}>
                                     <p className="font-semibold text-sm">{date}</p>
                                 </button>
                             ))}
@@ -82,12 +83,12 @@ const MedicationReminderModal: React.FC<MedicationReminderModalProps> = ({ alert
                         <p className="text-sm font-semibold text-gray-700 mb-2 dark:text-gray-300">Select a Time</p>
                         <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                             {availableTimes.map(time => (
-                                <button key={time} onClick={() => handleTimeButtonClick(time)} className={`p-3 rounded-lg border-2 text-center transition-colors flex items-center justify-center space-x-2 ${!isCustomTimeActive && selectedTime === time ? 'border-boticare-primary bg-boticare-blue/50 dark:border-blue-500 dark:bg-blue-900/30' : 'border-boticare-gray-medium hover:border-boticare-gray-dark dark:border-gray-600 dark:hover:border-gray-500'}`}>
+                                <button key={time} onClick={() => handleTimeButtonClick(time)} className={`p-3 rounded-lg border-2 text-center transition-colors flex items-center justify-center space-x-2 ${!isCustomTimeActive && selectedTime === time ? 'border-blue-600 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/30' : 'border-boticare-gray-medium hover:border-boticare-gray-dark dark:border-gray-600 dark:hover:border-gray-500'}`}>
                                     <ClockIcon className="w-4 h-4 text-boticare-gray-dark dark:text-gray-400" />
                                     <p className="font-semibold text-sm">{time}</p>
                                 </button>
                             ))}
-                            <button onClick={handleCustomTimeClick} className={`p-3 rounded-lg border-2 text-center transition-colors flex items-center justify-center space-x-2 ${isCustomTimeActive ? 'border-boticare-primary bg-boticare-blue/50 dark:border-blue-500 dark:bg-blue-900/30' : 'border-boticare-gray-medium hover:border-boticare-gray-dark dark:border-gray-600 dark:hover:border-gray-500'}`}>
+                            <button onClick={handleCustomTimeClick} className={`p-3 rounded-lg border-2 text-center transition-colors flex items-center justify-center space-x-2 ${isCustomTimeActive ? 'border-blue-600 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/30' : 'border-boticare-gray-medium hover:border-boticare-gray-dark dark:border-gray-600 dark:hover:border-gray-500'}`}>
                                 <ClockIcon className="w-4 h-4 text-boticare-gray-dark dark:text-gray-400" />
                                 <p className="font-semibold text-sm">Custom</p>
                             </button>
@@ -100,7 +101,7 @@ const MedicationReminderModal: React.FC<MedicationReminderModalProps> = ({ alert
                                     id="custom-time"
                                     value={customTime}
                                     onChange={handleCustomTimeChange}
-                                    className="w-full bg-boticare-gray rounded-lg border-none px-4 py-2 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none dark:bg-gray-700 dark:text-gray-200"
+                                    className="w-full bg-boticare-gray rounded-lg border-none px-4 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:bg-gray-700 dark:text-gray-200"
                                 />
                             </div>
                         )}
@@ -113,7 +114,7 @@ const MedicationReminderModal: React.FC<MedicationReminderModalProps> = ({ alert
                     </button>
                     <button
                         onClick={handleConfirm}
-                        className="bg-boticare-primary text-white font-semibold px-6 py-2 rounded-lg flex items-center space-x-2 hover:bg-opacity-90 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
+                        className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg flex items-center space-x-2 hover:bg-opacity-90 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
                     >
                         <span>Set Reminder</span>
                     </button>

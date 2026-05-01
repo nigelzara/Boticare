@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Patient, Professional, Appointment } from '../types';
+import { Professional, Appointment } from '../types';
 import { MicIcon, MicOffIcon, VideoOnIcon, VideoOffIcon, EndCallIcon, UserIcon, AlertIcon } from './Icons';
 import FeedbackModal from './FeedbackModal';
 import { logVideoCallSession } from '../services/geminiService';
@@ -8,29 +8,28 @@ import { logVideoCallSession } from '../services/geminiService';
 interface VideoCallProps {
   appointment: Appointment | null;
   professional?: Professional | null;
-  patient?: Patient | null;
-  isProfessionalView?: boolean;
   onEndCall: () => void;
 }
 
+// Utility to generate a UUID without external dependencies
 const generateUUID = () => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
+  // Fallback for older browsers
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 };
 
-const VideoCall: React.FC<VideoCallProps> = ({ appointment, professional, patient, isProfessionalView, onEndCall }) => {
+const VideoCall: React.FC<VideoCallProps> = ({ appointment, professional, onEndCall }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [connectionState, setConnectionState] = useState<'connecting' | 'connected' | 'failed'>('connecting');
   const [mediaError, setMediaError] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [recordingUrl, setRecordingUrl] = useState('');
   const userVideoRef = useRef<HTMLVideoElement>(null);
   const userStreamRef = useRef<MediaStream | null>(null);
   const callStartTimeRef = useRef<string | null>(null);
@@ -38,11 +37,19 @@ const VideoCall: React.FC<VideoCallProps> = ({ appointment, professional, patien
 
   useEffect(() => {
     let mounted = true;
+
     const startStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }, 
-            audio: { echoCancellation: true, noiseSuppression: true } 
+            video: { 
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: 'user'
+            }, 
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true
+            } 
         });
         
         if (mounted) {
@@ -55,12 +62,14 @@ const VideoCall: React.FC<VideoCallProps> = ({ appointment, professional, patien
       } catch (err: any) {
         console.error("Media Error:", err);
         if (mounted) {
-            setMediaError("Unable to access camera or microphone. Please check permissions.");
+            setMediaError("Unable to access camera or microphone. Please ensure you have granted permissions and are using HTTPS.");
             setConnectionState('failed');
         }
       }
     };
+
     startStream();
+
     return () => {
       mounted = false;
       if (userStreamRef.current) {
@@ -71,12 +80,14 @@ const VideoCall: React.FC<VideoCallProps> = ({ appointment, professional, patien
 
   useEffect(() => {
     if (mediaError) return;
+    
     const connectTimer = setTimeout(() => {
         if (connectionState === 'connecting') {
             setConnectionState('connected');
             callStartTimeRef.current = new Date().toISOString();
         }
     }, 2500);
+
     return () => clearTimeout(connectTimer);
   }, [mediaError, connectionState]);
 
@@ -108,24 +119,31 @@ const VideoCall: React.FC<VideoCallProps> = ({ appointment, professional, patien
       if (connectionState === 'connected' && appointment && callStartTimeRef.current) {
         const endTime = new Date().toISOString();
         const durationSeconds = elapsedTime;
-        const finalRecordingUrl = recordingUrl.trim() || undefined; // Pass undefined if empty
+        const recordingUrl = `https://mock-recording-url.com/${sessionIdRef.current}`;
         
-        await logVideoCallSession(
-            sessionIdRef.current,
-            appointment.id.toString(),
-            appointment.professionalId,
-            appointment.patientId,
-            callStartTimeRef.current,
-            endTime,
-            durationSeconds,
-            finalRecordingUrl
-        );
+        const proId = professional?.supabaseId || appointment.professionalId;
+        const patId = appointment.patientId; // In patient view, user is patient
+
+        if (proId && patId) {
+            await logVideoCallSession(
+                sessionIdRef.current,
+                appointment.id.toString(),
+                proId,
+                patId,
+                callStartTimeRef.current,
+                endTime,
+                durationSeconds,
+                recordingUrl
+            );
+        } else {
+            console.warn("Could not log video call session: Missing professional or patient Supabase ID.");
+        }
       }
       setShowFeedback(true); 
   };
 
-  const targetName = isProfessionalView ? (patient?.name || appointment?.patientName || 'Patient') : (professional?.name || appointment?.doctorName || 'Practitioner');
-  const targetAvatar = isProfessionalView ? (patient?.avatar || `https://i.pravatar.cc/150?u=${appointment?.patientName}`) : (professional?.avatar || appointment?.avatar || 'https://i.pravatar.cc/150?u=pro');
+  const targetName = professional?.name || appointment?.doctorName || 'Practitioner';
+  const targetAvatar = professional?.avatar || appointment?.avatar || 'https://i.pravatar.cc/150?u=pro';
 
   return (
     <div className="animate-fade-in space-y-4 pb-10 h-[calc(100vh-140px)] flex flex-col">
@@ -146,15 +164,6 @@ const VideoCall: React.FC<VideoCallProps> = ({ appointment, professional, patien
             </span>
             
             <h2 className="text-lg font-bold truncate">Session with {targetName}</h2>
-            {isProfessionalView && (
-                <input 
-                    type="text" 
-                    value={recordingUrl}
-                    onChange={(e) => setRecordingUrl(e.target.value)}
-                    placeholder="Recording URL (optional)"
-                    className="text-xs bg-gray-100 dark:bg-gray-700 rounded-md px-2 py-1.5 border-none focus:ring-2 focus:ring-blue-500 hidden md:block w-64"
-                />
-            )}
             <span className="text-sm font-mono font-bold text-blue-600 ml-auto">{Math.floor(elapsedTime / 60)}:{String(elapsedTime % 60).padStart(2, '0')}</span>
         </div>
 
@@ -194,7 +203,7 @@ const VideoCall: React.FC<VideoCallProps> = ({ appointment, professional, patien
                 <div className="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-black/50 px-2 py-0.5 rounded-lg">You</div>
             </div>
             
-            <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center space-x-6 z-30">
+            <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center space-x-6 z-30 transition-all duration-300">
                 <button onClick={toggleMic} className={`p-4 rounded-full transition-all shadow-lg hover:scale-110 active:scale-95 ${isMuted ? 'bg-white text-red-600' : 'bg-white/20 backdrop-blur-md text-white hover:bg-white/30 border border-white/20'}`}>
                     {isMuted ? <MicOffIcon className="w-6 h-6" /> : <MicIcon className="w-6 h-6" />}
                 </button>

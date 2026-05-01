@@ -1,11 +1,10 @@
 
 import React from 'react';
 import { Appointment, AppointmentStatus } from '../types';
-import { CalendarIcon, ClockIcon, VideoIcon, NotesIcon, EditIcon, MoreIcon } from './Icons';
+import { CalendarIcon, ClockIcon, VideoIcon, NotesIcon } from './Icons';
 
 interface AppointmentCardProps {
   appointment: Appointment;
-  isProfessionalView?: boolean;
   onReschedule?: (appointment: Appointment) => void;
   onCancel?: (appointment: Appointment) => void;
   onJoinVideo?: (appointment: Appointment) => void;
@@ -21,10 +20,10 @@ const statusStyles = {
   [AppointmentStatus.Rescheduled]: 'bg-boticare-yellow text-boticare-yellow-dark dark:bg-yellow-900/50 dark:text-yellow-300',
 };
 
-const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, isProfessionalView, onReschedule, onCancel, onJoinVideo, onViewSummary, onEditNotes, onViewDetails }) => {
-  const displayTitle = isProfessionalView ? appointment.patientName : appointment.doctorName;
-  const displaySubtitle = isProfessionalView ? "Patient" : appointment.specialty;
-  const displayAvatar = isProfessionalView ? `https://i.pravatar.cc/150?u=${appointment.patientName}` : appointment.avatar;
+const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onReschedule, onCancel, onJoinVideo, onViewSummary, onEditNotes, onViewDetails }) => {
+  const displayTitle = appointment.doctorName;
+  const displaySubtitle = appointment.specialty;
+  const displayAvatar = appointment.avatar;
 
   const handleJoinVideoClick = (e: React.MouseEvent) => {
     e.stopPropagation();

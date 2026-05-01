@@ -68,10 +68,7 @@ const createBlob = (data: Float32Array): Blob => {
 }
 
 const MAX_CHARS = 1000;
-
-// Create AI instance only if API key is available
-const ai = import.meta.env.VITE_GEMINI_API_KEY ? new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY }) : null;
-
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 const outputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 let nextStartTime = 0;
 
@@ -99,7 +96,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
   
   // Live API State
   const [isLiveSessionActive, setIsLiveSessionActive] = useState(false);
-  const sessionPromiseRef = useRef<any>(null);
+  const sessionPromiseRef = useRef<ReturnType<typeof ai.live.connect> | null>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
@@ -339,15 +336,6 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
   }, []);
 
   const startLiveSession = useCallback(async () => {
-    if (!ai) {
-      setMessages(prev => [...prev, { 
-        sender: 'ai', 
-        text: "Voice features are currently unavailable. Please check your API configuration.", 
-        timestamp: getCurrentTime() 
-      }]);
-      return;
-    }
-
     if (isLiveSessionActive) {
         stopLiveSession();
         return;
@@ -503,7 +491,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
                         : 'bg-boticare-blue-dark text-white rounded-tr-none'
                   }`}>
                     {msg.imageUrl && <img src={msg.imageUrl} alt="content" className="rounded-lg mb-3 max-h-48 md:max-h-64 w-full object-cover border border-black/10"/>}
-                    <p className="whitespace-pre-wrap">{msg.text.replace(/###/g, '').replace(/\| :--- \| :--- \| :--- \|/g, '').replace(/\*/g, '')}</p>
+                    <p className="whitespace-pre-wrap">{msg.text.replace(/\*/g, '')}</p>
                     
                     {msg.sender === 'ai' && msg.sources && (
                         <div className="mt-3 pt-2 border-t border-gray-100 dark:border-gray-600/50">
@@ -632,7 +620,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ userProfile }) => {
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={isLiveSessionActive ? "Listening..." : "Message AI..."}
-              className={`w-full bg-gray-50 border border-gray-200 rounded-2xl resize-none pl-12 pr-14 py-3.5 shadow-inner focus:outline-none focus:ring-2 focus:ring-boticare-blue-dark focus:border-transparent dark:bg-gray-900/50 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-500 text-base md:text-base transition-all ${isLiveSessionActive ? 'ring-2 ring-red-500 border-red-500 bg-red-50' : ''}`}
+              className={`w-full bg-gray-50 border border-gray-200 rounded-2xl resize-none pl-12 pr-14 py-3.5 shadow-inner focus:outline-none focus:ring-2 focus:ring-boticare-blue-dark focus:border-transparent dark:bg-gray-900/50 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-500 text-sm md:text-base transition-all ${isLiveSessionActive ? 'ring-2 ring-red-500 border-red-500 bg-red-50' : ''}`}
               rows={1}
               maxLength={MAX_CHARS}
               disabled={isLoading || isLiveSessionActive}

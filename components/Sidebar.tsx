@@ -1,21 +1,21 @@
 
 import React from 'react';
-import { Page, UserRole } from '../types';
-import { DashboardIcon, SettingsIcon, HelpIcon, XIcon, UsersIcon, CalendarIcon, SparklesIcon, StethoscopeIcon, PillIcon } from './Icons';
+import { Page } from '../types';
+import { DashboardIcon, HealthMetricsIcon, MedicationsIcon, AppointmentsIcon, ChatIcon, SettingsIcon, HelpIcon, XIcon, SparklesIcon } from './Icons';
 
 interface SidebarProps {
   activePage: Page;
   setActivePage: (page: Page) => void;
   onClose?: () => void;
-  userRole?: UserRole;
 }
 
-const professionalMenuItems = [
-    { name: Page.ProfessionalDashboard, icon: DashboardIcon, label: 'Dashboard' },
-    { name: Page.PatientList, icon: UsersIcon, label: 'Patient List' },
-    { name: Page.PharmacyPatients, icon: PillIcon, label: 'Pharmacy Patients' },
-    { name: Page.ProfessionalSchedule, icon: CalendarIcon, label: 'My Schedule' },
-    { name: Page.ChatBot, icon: SparklesIcon, label: 'AI Assistant' },
+const patientMenuItems = [
+  { name: Page.Dashboard, icon: DashboardIcon, label: 'Dashboard' },
+  { name: Page.HealthMetrics, icon: HealthMetricsIcon, label: 'Health Metrics' },
+  { name: Page.Medications, icon: MedicationsIcon, label: 'Medications' },
+  { name: Page.Appointments, icon: AppointmentsIcon, label: 'Appointments' },
+  { name: Page.MyDoctors, icon: ChatIcon, label: 'Messages' },
+  { name: Page.ChatBot, icon: SparklesIcon, label: 'AI Assistant' },
 ];
 
 const supportItems = [
@@ -24,17 +24,11 @@ const supportItems = [
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage, onClose }) => {
-  // Always use professional items for Boticare Pro
-  const items = professionalMenuItems;
-
   return (
     <aside className="w-64 h-full bg-white border-r border-boticare-gray-medium p-6 flex flex-col justify-between dark:bg-gray-800 dark:border-gray-700 overflow-y-auto">
       <div>
         <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2">
-                <StethoscopeIcon className="w-6 h-6 text-blue-600" />
-                <h2 className="text-xl font-bold text-boticare-primary dark:text-white">Boticare <span className="text-[10px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded ml-1 align-middle uppercase">Pro</span></h2>
-            </div>
+            <h2 className="text-xl font-bold text-boticare-primary dark:text-white">Boticare</h2>
             {onClose && (
                 <button onClick={onClose} className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                     <XIcon className="w-5 h-5 text-gray-500" />
@@ -42,14 +36,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage, onClose })
             )}
         </div>
 
-        <p className="text-[10px] text-boticare-gray-dark font-bold uppercase tracking-wider mb-3 dark:text-gray-500">Practice Portal</p>
+        <p className="text-[10px] text-boticare-gray-dark font-bold uppercase tracking-wider mb-3 dark:text-gray-500">Patient Portal</p>
         <nav className="space-y-1">
-          {items.map((item) => (
+          {patientMenuItems.map((item) => (
             <SidebarItem
               key={item.label}
               icon={item.icon}
               label={item.label}
-              isActive={activePage === item.name}
+              isActive={activePage === item.name || (item.name === Page.Appointments && activePage === Page.ScheduleAppointment)}
               onClick={() => setActivePage(item.name)}
             />
           ))}
@@ -69,6 +63,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage, onClose })
             />
           ))}
         </nav>
+        
+        <div className="mt-8 p-4 bg-boticare-blue/30 dark:bg-blue-900/20 rounded-xl border border-boticare-blue dark:border-blue-800/50">
+            <p className="text-xs font-bold text-boticare-blue-dark dark:text-blue-300 mb-1">Emergency Help</p>
+            <p className="text-[10px] text-gray-600 dark:text-gray-400 mb-3">Instant connection to our 24/7 care team.</p>
+            <button className="w-full py-1.5 bg-boticare-blue-dark text-white text-[10px] font-bold rounded-lg hover:bg-blue-600 transition-colors">
+                Call Now
+            </button>
+        </div>
       </div>
     </aside>
   );

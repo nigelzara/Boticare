@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Appointment } from '../types';
 import { XIcon, NotesIcon } from './Icons';
@@ -48,7 +49,7 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({ appointment, onClose, o
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Add notes for your appointment..."
-            className="w-full bg-boticare-gray rounded-lg border-none p-4 focus:ring-2 focus:ring-boticare-blue-dark focus:outline-none resize-none dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
+            className="w-full bg-boticare-gray rounded-lg border-none p-4 focus:ring-2 focus:ring-blue-600 focus:outline-none resize-none dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
           />
         </div>
 
@@ -58,7 +59,7 @@ const EditNotesModal: React.FC<EditNotesModalProps> = ({ appointment, onClose, o
           </button>
           <button
             onClick={handleSave}
-            className="bg-boticare-primary text-white font-semibold px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
+            className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
           >
             Save Notes
           </button>
