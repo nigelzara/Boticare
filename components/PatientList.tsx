@@ -4,7 +4,13 @@ import { Page, Patient } from '../types';
 import { SearchIcon, FilterIcon, UserIcon, ChatIcon, FileIcon, XIcon, CalendarIcon, PlusIcon } from './Icons';
 import Toast from './Toast';
 
-const MOCK_PATIENTS: Patient[] = [];
+const MOCK_PATIENTS: Patient[] = [
+    { id: '1', name: 'Jane Doe', age: 34, gender: 'Female', condition: 'Hypertension', status: 'Stable', lastVisit: 'June 6, 2025', avatar: 'https://i.pravatar.cc/150?u=jane', supabaseId: 'patient1_supabase_id' },
+    { id: '2', name: 'John Smith', age: 45, gender: 'Male', condition: 'Type 2 Diabetes', status: 'Critical', lastVisit: 'June 4, 2025', avatar: 'https://i.pravatar.cc/150?u=john', supabaseId: 'patient2_supabase_id' },
+    { id: '3', name: 'Alice Johnson', age: 28, gender: 'Female', condition: 'Migraine', status: 'Recovering', lastVisit: 'May 20, 2025', avatar: 'https://i.pravatar.cc/150?u=alice', supabaseId: 'patient3_supabase_id' },
+    { id: '4', name: 'Robert Brown', age: 62, gender: 'Male', condition: 'Arthritis', status: 'Stable', lastVisit: 'June 1, 2025', avatar: 'https://i.pravatar.cc/150?u=robert', supabaseId: 'patient4_supabase_id' },
+    { id: '5', name: 'Emily Davis', age: 50, gender: 'Female', condition: 'Asthma', status: 'Stable', lastVisit: 'May 15, 2025', avatar: 'https://i.pravatar.cc/150?u=emily', supabaseId: 'patient5_supabase_id' },
+];
 
 interface PatientListProps {
     setActivePage: (p: Page) => void;
@@ -13,8 +19,16 @@ interface PatientListProps {
 
 const PatientList: React.FC<PatientListProps> = ({ setActivePage, onStartChat }) => {
     const [patients, setPatients] = useState<Patient[]>(MOCK_PATIENTS);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('All');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [toast, setToast] = useState<string | null>(null);
+
+    const filteredPatients = patients.filter(patient => {
+        const matchesSearch = patient.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = filterStatus === 'All' || patient.status === filterStatus;
+        return matchesSearch && matchesStatus;
+    });
 
     const handleSavePatient = (newPatient: Patient) => {
         setPatients(prev => [newPatient, ...prev]);
@@ -47,7 +61,88 @@ const PatientList: React.FC<PatientListProps> = ({ setActivePage, onStartChat })
                 </button>
             </div>
 
+            <div className="bg-white p-4 rounded-2xl border border-boticare-gray-medium dark:bg-gray-800 dark:border-gray-700 flex flex-col md:flex-row gap-4 shadow-sm">
+                <div className="relative flex-1">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <SearchIcon className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search by name or condition..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-boticare-gray dark:bg-gray-700 rounded-xl border-none focus:ring-2 focus:ring-blue-600 dark:text-white shadow-inner"
+                    />
+                </div>
+                <div className="flex items-center space-x-2">
+                    <FilterIcon className="w-5 h-5 text-gray-400" />
+                    <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="bg-boticare-gray dark:bg-gray-700 border-none rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-blue-600 dark:text-white"
+                    >
+                        <option value="All">All Statuses</option>
+                        <option value="Stable">Stable</option>
+                        <option value="Critical">Critical</option>
+                        <option value="Recovering">Recovering</option>
+                    </select>
+                </div>
+            </div>
 
+            <div className="bg-white rounded-2xl border border-boticare-gray-medium overflow-hidden dark:bg-gray-800 dark:border-gray-700 shadow-sm">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                        <thead className="bg-gray-50 dark:bg-gray-700/50">
+                            <tr>
+                                <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Patient Details</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Condition</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Clinical Status</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Last Encounter</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-100 dark:bg-gray-800 dark:divide-gray-700">
+                            {filteredPatients.map((patient) => (
+                                <tr key={patient.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center">
+                                            <img className="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm" src={patient.avatar} alt="" />
+                                            <div className="ml-4">
+                                                <div className="text-sm font-bold text-gray-900 dark:text-white leading-tight">{patient.name}</div>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{patient.age} yrs • {patient.gender}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{patient.condition}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className={`px-2.5 py-1 text-[10px] font-black uppercase rounded-full 
+                                            ${patient.status === 'Stable' ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300' : 
+                                              patient.status === 'Critical' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : 
+                                              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300'}`}>
+                                            {patient.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400 font-bold">{patient.lastVisit}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                        <div className="flex justify-end space-x-2">
+                                            <button 
+                                                onClick={() => onStartChat(patient)}
+                                                className="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-600 p-2.5 rounded-xl transition-all shadow-sm" 
+                                                title="Secure Message"
+                                            >
+                                                <ChatIcon className="w-5 h-5" />
+                                            </button>
+                                            <button className="bg-gray-100 text-gray-500 hover:bg-gray-800 hover:text-white dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-white p-2.5 rounded-xl transition-all shadow-sm" title="View Dossier">
+                                                <FileIcon className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
 };
