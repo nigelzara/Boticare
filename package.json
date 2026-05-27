@@ -2,9 +2,9 @@
   "name": "boticare-root",
   "private": true,
   "scripts": {
-    "dev": "npm run dev --prefix \"Boticare Patient\"",
-    "build": "npm run build --prefix \"Boticare Patient\"",
-    "test": "npm run test --prefix \"Boticare Patient\"",
-    "install-all": "npm install --prefix \"Boticare Patient\""
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest",
+    "preview": "vite preview"
   }
 }
