@@ -3,11 +3,12 @@ import { GoogleGenAI, Modality, GenerateContentResponse, Part } from "@google/ge
 import { Appointment, ChatMessage, AvailabilitySlot, PrescriptionRefillRequest } from "../types";
 import { supabase } from "./supabaseClient"; // Import supabase
 
-if (!process.env.API_KEY) {
-  throw new Error("API_KEY environment variable not set");
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+if (!apiKey) {
+  console.warn("VITE_GEMINI_API_KEY environment variable not set. Gemini AI features will be disabled.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 interface GroundingOptions {
     useSearch?: boolean;
@@ -21,6 +22,13 @@ const getCurrentTimestamp = () => {
 };
 
 export const getAIResponse = async (userMessage: string, imagePart: Part | null, grounding: GroundingOptions): Promise<ChatMessage> => {
+  if (!ai) {
+    return { 
+        sender: 'ai', 
+        text: "AI features are currently unavailable. Please check your API configuration.",
+        timestamp: getCurrentTimestamp(),
+    };
+  }
   try {
     const contents: { parts: Part[] } = { parts: [] };
     if (imagePart) {
@@ -76,6 +84,9 @@ export const getAIResponse = async (userMessage: string, imagePart: Part | null,
 };
 
 export const getWordSuggestions = async (inputText: string, chatHistory: ChatMessage[]): Promise<string[]> => {
+  if (!ai) {
+    return [];
+  }
   if (!inputText.trim()) {
     return [];
   }
@@ -110,6 +121,9 @@ Provide suggestions as a single, comma-separated string. Example: is normal,abou
 };
 
 export const getAppointmentSummary = async (appointment: Appointment): Promise<string> => {
+  if (!ai) {
+    return "AI features are currently unavailable.";
+  }
   try {
     const prompt = `Generate a professional medical summary of a patient's consultation (~300 words).
     
@@ -134,6 +148,9 @@ export const getAppointmentSummary = async (appointment: Appointment): Promise<s
 };
 
 export const editImage = async (base64ImageData: string, mimeType: string, prompt: string): Promise<string | null> => {
+    if (!ai) {
+        return null;
+    }
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash-image',
@@ -209,6 +226,9 @@ const extractFrames = (videoFile: File): Promise<string[]> => {
 };
 
 export const analyzeVideo = async (videoFile: File, prompt: string): Promise<string> => {
+    if (!ai) {
+        return "AI features are currently unavailable.";
+    }
     try {
         const frames = await extractFrames(videoFile);
          if (frames.length === 0) {
@@ -235,6 +255,9 @@ export const analyzeVideo = async (videoFile: File, prompt: string): Promise<str
 };
 
 export const generateSpeech = async (text: string): Promise<string | null> => {
+    if (!ai) {
+        return null;
+    }
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash-preview-tts",
@@ -257,6 +280,9 @@ export const generateSpeech = async (text: string): Promise<string | null> => {
 };
 
 export const generateHealthReport = async (healthData: any, startDate: string, endDate: string): Promise<string> => {
+    if (!ai) {
+        return "AI features are currently unavailable.";
+    }
     try {
         const prompt = `As a medical professional AI, analyze the following patient health data for the period from ${startDate} to ${endDate} and generate a comprehensive, easy-to-understand health report. The report should highlight key trends, potential areas of concern, and suggest lifestyle improvements or questions for their doctor.
 
