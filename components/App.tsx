@@ -1,21 +1,21 @@
 
 import React, { useState, useEffect } from 'react';
-import Layout from './components/Layout';
-import Dashboard from './components/Dashboard';
-import ProfessionalDashboard from './components/ProfessionalDashboard';
-import PatientList from './components/PatientList';
-import HealthMetrics from './components/HealthMetrics';
-import Medications from './components/Medications';
-import Appointments from './components/Appointments';
-import MyDoctors from './components/MyDoctors';
-import ChatBot from './components/Community';
-import PersonalChat from './components/PersonalChat';
-import Settings from './components/Settings';
-import HelpSupport from './components/HelpSupport';
-import VideoCall from './components/VideoCall';
-import Auth from './components/Auth';
-import { supabase } from './services/supabaseClient';
-import { Page, Professional, UserProfile, UserRole, BoticareNotification, Patient, ProfessionalTitle, Appointment } from './types';
+import Layout from './Layout';
+import Dashboard from './Dashboard';
+import ProfessionalDashboard from './ProfessionalDashboard';
+import PatientList from './PatientList';
+import HealthMetrics from './HealthMetrics';
+import Medications from './Medications';
+import Appointments from './Appointments';
+import MyDoctors from './MyDoctors';
+import ChatBot from './Community';
+import PersonalChat from './PersonalChat';
+import Settings from './Settings';
+import HelpSupport from './HelpSupport';
+import VideoCall from './VideoCall';
+import Auth from './Auth';
+import { supabase } from '../services/supabaseClient';
+import { Page, Professional, UserProfile, UserRole, BoticareNotification, Patient, ProfessionalTitle, Appointment } from '../types';
 
 const App: React.FC = () => {
   const [session, setSession] = useState<any | null>(null);
